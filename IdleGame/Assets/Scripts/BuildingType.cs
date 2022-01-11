@@ -9,5 +9,5 @@ public class BuildingType : ScriptableObject
     public float resourceGenerationDuration;
     public int goldGenerationAmount, gemGenerationAmount;
     public int goldCost, gemCost;
-    public Vector3Int shapeOfBuilding;
+    public Vector2Int[] rows;
 }

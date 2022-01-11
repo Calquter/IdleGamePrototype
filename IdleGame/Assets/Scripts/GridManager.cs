@@ -39,7 +39,19 @@ public class GridManager : MonoBehaviour
 
     public void DestroGrid(Vector2Int gridPos)
     {
-        Destroy(tiles[gridPos.x, gridPos.y]);
+        tiles[gridPos.x, gridPos.y].SetActive(false);
+    }
+  
+    
+
+    public bool ControlShapeFit(List<Vector2Int> gridPos)
+    {
+        for (int i = 0; i < gridPos.Count; i++)
+            if (gridPos[i].x > tiles.GetLength(0) - 1 || gridPos[i].x < 0 || gridPos[i].y > tiles.GetLength(1) - 1 || gridPos[i].y < 0 || !tiles[gridPos[i].x, gridPos[i].y].activeSelf)
+                return false;
+
+        return true;
+        
     }
 
 }

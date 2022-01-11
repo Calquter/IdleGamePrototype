@@ -20,4 +20,6 @@ MonoBehaviour:
   gemGenerationAmount: 10
   goldCost: 5
   gemCost: 5
-  shapeOfBuilding: {x: 1, y: -2, z: -1}
+  rows:
+  - {x: 0, y: 2}
+  - {x: 0, y: 2}

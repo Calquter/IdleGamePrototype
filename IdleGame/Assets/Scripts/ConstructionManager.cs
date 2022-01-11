@@ -9,9 +9,12 @@ public class ConstructionManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> _objectsShapes;
     private GameObject _selectedGrid;
+    private bool _canBuild;
+
+    public List<Vector2Int> constructableTiles;
     private void Start()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 50; i++)
         {
             _objectsShapes.Add(Instantiate(_placeholderBuildingObject, new Vector2(500, 500), Quaternion.identity));
             _objectsShapes[i].SetActive(false);
@@ -40,18 +43,16 @@ public class ConstructionManager : MonoBehaviour
 
                 VisualizeBuildingShape(coordinates);
 
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && _canBuild)
                 {
                     if (hit.collider.tag == "Grid")
                     {
-                        
                         List<Vector2Int> tiles = FindConstructingPlaces(coordinates);
 
                         for (int i = 0; i < tiles.Count; i++)
                         {
                             ConstructBuilding(tiles[i]);
                         }
-                        
                     }
                 }
             }
@@ -65,57 +66,25 @@ public class ConstructionManager : MonoBehaviour
     
     private List<Vector2Int> FindConstructingPlaces(Vector2Int coordinates)
     {
-        GameObject[,] tiles = GameManager.instance.gridManager.tiles;
-        List<Vector2Int> constructableTiles = new List<Vector2Int>();
+        constructableTiles = new List<Vector2Int>();
 
-        #region Horizontal Dimention
-
-        int horizontalMoveCount = Mathf.Abs(currentBuild.type.shapeOfBuilding.x) + 1;
-
-        for (int i = 0; i < horizontalMoveCount; i++)
+        for (int row = 0; row < currentBuild.type.rows.Length; row++)
         {
-            if (currentBuild.type.shapeOfBuilding.x < 0)
-                constructableTiles.Add(new Vector2Int(coordinates.x - i, coordinates.y));
-            else
-                constructableTiles.Add(new Vector2Int(coordinates.x + i, coordinates.y));
+            int horizontalLeftMove = Mathf.Abs(currentBuild.type.rows[row].x);
+            int horizontalRightMove = Mathf.Abs(currentBuild.type.rows[row].y);
+
+            if (horizontalLeftMove != 0)
+                for (int x = 0; x < horizontalLeftMove; x++)
+                    constructableTiles.Add(new Vector2Int(coordinates.x - x, coordinates.y - row));
+
+            if (horizontalRightMove != 0)
+                for (int y = 0; y < horizontalRightMove; y++)
+                    constructableTiles.Add(new Vector2Int(coordinates.x + y, coordinates.y - row));
+
+            constructableTiles.Add(new Vector2Int(coordinates.x, coordinates.y - row));
         }
-
-        #endregion
-
-        #region Vertical Dimention
-
-        int verticalMoveCount = Mathf.Abs(currentBuild.type.shapeOfBuilding.y) + 1;
-
-        for (int i = 0; i < verticalMoveCount; i++)
-        {
-            if (currentBuild.type.shapeOfBuilding.y < 0)
-                constructableTiles.Add(new Vector2Int(coordinates.x, coordinates.y - i));
-            else
-                constructableTiles.Add(new Vector2Int(coordinates.x, coordinates.y + i));
-        }
-
-        #endregion
-
-        #region Depth Dimention
-
-        int depthMoveCount = Mathf.Abs(currentBuild.type.shapeOfBuilding.z) + 1;
-
-        for (int i = 0; i < depthMoveCount; i++)
-        {
-            if (currentBuild.type.shapeOfBuilding.z < 0)
-                constructableTiles.Add(new Vector2Int(coordinates.x + i, coordinates.y - i));
-            else
-                constructableTiles.Add(new Vector2Int(coordinates.x + i, coordinates.y + i));
-        }
-
-        #endregion
-
+        
         return constructableTiles;
-    }
-
-    private bool ControlShapeFit()
-    {
-        return false;
     }
 
     private void ConstructBuilding(Vector2Int gridPos)
@@ -129,7 +98,30 @@ public class ConstructionManager : MonoBehaviour
         for (int i = 0; i < tiles.Count; i++)
         {
             _objectsShapes[i].SetActive(true);
+
+            if (GameManager.instance.gridManager.tiles.GetLength(0) < tiles[i].x || 
+                GameManager.instance.gridManager.tiles.GetLength(1) < tiles[i].y || GameManager.instance.gridManager.tiles[tiles[i].x, tiles[i].y] == null)
+            {
+                continue;
+            }
+
             _objectsShapes[i].transform.position = GameManager.instance.gridManager.tiles[tiles[i].x, tiles[i].y].transform.position;
+
+        }
+
+        _canBuild = GameManager.instance.gridManager.ControlShapeFit(tiles);
+
+        if (_canBuild)
+            PaintSilhouettes(Color.green);
+        else
+            PaintSilhouettes(Color.red);
+    }
+
+    private void PaintSilhouettes(Color color)
+    {
+        for (int i = 0; i < _objectsShapes.Count; i++)
+        {
+            _objectsShapes[i].GetComponent<SpriteRenderer>().color = color;
         }
     }
 
