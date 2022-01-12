@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
 
     [SerializeField] private Canvas _canvas;
@@ -39,10 +37,5 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         _canvasGroup.alpha = 1;
         _rectTransform.anchoredPosition = _startPos;
         GameManager.instance.constructionManager.isBuildingDragging = false;
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        
     }
 }

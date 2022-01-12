@@ -678,6 +678,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myGold: 10
   myGem: 10
+  myGoldText: {fileID: 212343254}
+  myGemText: {fileID: 1584542781}
 --- !u!4 &274813196
 Transform:
   m_ObjectHideFlags: 0
@@ -1296,6 +1298,11 @@ MonoBehaviour:
   playerData: {fileID: 274813195}
   gridManager: {fileID: 2106499625}
   constructionManager: {fileID: 274813197}
+  floatingText_Gold: {fileID: 1605310679020363129, guid: 36a81fb215220864a843dc03dca3c491, type: 3}
+  floatingText_Gem: {fileID: 5983207614457792526, guid: 19b419498aa902947926d4883f590747, type: 3}
+  floatingTextCanvas_Gold: {fileID: 6580184062937395691, guid: cf3612499091cc14a9fe518b9a373ae2, type: 3}
+  floatingTextCanvas_Gem: {fileID: 8014684339921114290, guid: 68ca345bb41db7440bbcf0ca2ad244b1, type: 3}
+  canvas: {fileID: 1321932597}
 --- !u!1 &688676453
 GameObject:
   m_ObjectHideFlags: 0

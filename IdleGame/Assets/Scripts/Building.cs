@@ -1,13 +1,24 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class Building : MonoBehaviour
 {
     public BuildingType type;
     
-    private float _resourceGenerationDuration;
+    private float _resourceGenerationCurrenTime;
     [SerializeField] private float resouceGenerateSpeed;
+    [SerializeField] private TMP_Text _buildingName;
+    [SerializeField] private TMP_Text _resourceRemainTime;
+    [SerializeField] private Slider _proccesSlider;
 
-    private void Awake() => _resourceGenerationDuration = type.resourceGenerationDuration;
+
+    private void Awake() => _resourceGenerationCurrenTime = type.resourceGenerationDuration;
+
+    private void Start()
+    {
+        _buildingName.text = type.constructionName;
+    }
 
     private void Update()
     {
@@ -16,12 +27,17 @@ public class Building : MonoBehaviour
 
     private void ResourceGenerationTimer() 
     {
-        _resourceGenerationDuration -= Time.deltaTime * resouceGenerateSpeed;
+        _resourceGenerationCurrenTime -= Time.deltaTime * resouceGenerateSpeed;
 
-        if (_resourceGenerationDuration <= 0)
+        _resourceRemainTime.text = _resourceGenerationCurrenTime.ToString("F0") + "s";
+
+        _proccesSlider.maxValue = type.resourceGenerationDuration;
+        _proccesSlider.value = _resourceGenerationCurrenTime % type.resourceGenerationDuration;
+
+        if (_resourceGenerationCurrenTime <= 0)
         {
             GenerateResource();
-            _resourceGenerationDuration = type.resourceGenerationDuration;
+            _resourceGenerationCurrenTime = type.resourceGenerationDuration;
         }
     }
 
@@ -29,5 +45,8 @@ public class Building : MonoBehaviour
     {
         GameManager.instance.playerData.myGold += type.goldGenerationAmount;
         GameManager.instance.playerData.myGem += type.gemGenerationAmount;
+
+        GameManager.instance.CreateFloatText(transform.position, type.goldGenerationAmount, type.gemGenerationAmount);
+
     }
 }

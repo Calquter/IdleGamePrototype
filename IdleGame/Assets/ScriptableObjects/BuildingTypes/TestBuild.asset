@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b0df989685a2a94bafde21f9c34f1a9, type: 3}
   m_Name: TestBuild
   m_EditorClassIdentifier: 
-  constructionName: Test
+  constructionName: Building_A
   constructionSprite: {fileID: 21300000, guid: db21821aba8a11442885fb09ddd3b7d7, type: 3}
   constructionObject: {fileID: 1296516175068246193, guid: cb0085b357750dd4295afca0c45c9d86, type: 3}
-  resourceGenerationDuration: 15
+  resourceGenerationDuration: 5
   goldGenerationAmount: 10
   gemGenerationAmount: 10
   goldCost: 5

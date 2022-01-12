@@ -1,10 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public interface SaveLoadData
+public interface ISaveLoadData
 {
     public void SaveData();
     public void LoadData();
+}
+
+public interface IDestroyWithDelay{
+    public IEnumerator DestroyWithDelay(float time, GameObject gameObject);
 }
 
