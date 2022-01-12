@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public PlayerData playerData;
     public GridManager gridManager;
+    public ConstructionManager constructionManager;
 
     private void Awake() => instance = this;
     

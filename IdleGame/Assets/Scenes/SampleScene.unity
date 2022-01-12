@@ -707,6 +707,7 @@ MonoBehaviour:
   currentBuild: {fileID: 1938233868}
   _placeholderBuildingObject: {fileID: 3873705693864548356, guid: 9d82d00b628b0c242a4d917e4cf1065e, type: 3}
   _objectsShapes: []
+  constructableTiles: []
 --- !u!1 &326386073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,6 +1294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerData: {fileID: 274813195}
   gridManager: {fileID: 2106499625}
+  constructionManager: {fileID: 274813197}
 --- !u!1 &688676453
 GameObject:
   m_ObjectHideFlags: 0

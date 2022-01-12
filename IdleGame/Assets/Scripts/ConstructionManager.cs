@@ -9,7 +9,7 @@ public class ConstructionManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> _objectsShapes;
     private GameObject _selectedGrid;
-    private bool _canBuild;
+    private bool _canBuild, _isOutOfTile;
 
     public List<Vector2Int> constructableTiles;
     private void Start()
@@ -34,25 +34,29 @@ public class ConstructionManager : MonoBehaviour
         {
             if (currentBuild != null)
             {
-                Vector2Int coordinates = GameManager.instance.gridManager.GetTileCoordinate(hit.collider.gameObject);
+                Vector2Int coordinate = GameManager.instance.gridManager.GetTileCoordinate(hit.collider.gameObject);
                 
+
                 if (_selectedGrid != null && !_selectedGrid.Equals(hit.collider.gameObject))
                     HidePlaceHolders();
 
                 _selectedGrid = hit.collider.gameObject;
 
-                VisualizeBuildingShape(coordinates);
+                VisualizeBuildingShape(coordinate);
 
-                if (Input.GetMouseButtonDown(0) && _canBuild)
+                if (Input.GetMouseButtonDown(0) && _canBuild && !_isOutOfTile)
                 {
                     if (hit.collider.tag == "Grid")
                     {
-                        List<Vector2Int> tiles = FindConstructingPlaces(coordinates);
+                        List<Vector2Int> tiles = FindConstructingPlaces(coordinate);
+
 
                         for (int i = 0; i < tiles.Count; i++)
                         {
                             ConstructBuilding(tiles[i]);
                         }
+
+                        HidePlaceHolders();
                     }
                 }
             }
@@ -72,16 +76,35 @@ public class ConstructionManager : MonoBehaviour
         {
             int horizontalLeftMove = Mathf.Abs(currentBuild.type.rows[row].x);
             int horizontalRightMove = Mathf.Abs(currentBuild.type.rows[row].y);
+            _isOutOfTile = false;
+
 
             if (horizontalLeftMove != 0)
                 for (int x = 0; x < horizontalLeftMove; x++)
-                    constructableTiles.Add(new Vector2Int(coordinates.x - x, coordinates.y - row));
+                {
+                    if (coordinates.x + x < 10 && coordinates.x + x >= 0 && coordinates.y - row < 10 && coordinates.y - row >= 0)
+                        constructableTiles.Add(new Vector2Int(coordinates.x - x, coordinates.y - row));
+                    else
+                        _isOutOfTile = true;
+                }
+                    
 
             if (horizontalRightMove != 0)
                 for (int y = 0; y < horizontalRightMove; y++)
-                    constructableTiles.Add(new Vector2Int(coordinates.x + y, coordinates.y - row));
+                {
+                    if (coordinates.x + y < 10 && coordinates.x + y >= 0 && coordinates.y - row < 10 && coordinates.y - row >= 0)
+                        constructableTiles.Add(new Vector2Int(coordinates.x + y, coordinates.y - row));
+                    else
+                        _isOutOfTile = true;
+                }
 
-            constructableTiles.Add(new Vector2Int(coordinates.x, coordinates.y - row));
+
+            if (coordinates.x < 10 && coordinates.x >= 0 && coordinates.y - row < 10 && coordinates.y - row >= 0)
+                constructableTiles.Add(new Vector2Int(coordinates.x, coordinates.y - row));
+            else
+                _isOutOfTile = true;
+
+
         }
         
         return constructableTiles;
@@ -107,11 +130,13 @@ public class ConstructionManager : MonoBehaviour
 
             _objectsShapes[i].transform.position = GameManager.instance.gridManager.tiles[tiles[i].x, tiles[i].y].transform.position;
 
+            _canBuild = GameManager.instance.gridManager.ControlShapeFit(tiles);
+
         }
 
-        _canBuild = GameManager.instance.gridManager.ControlShapeFit(tiles);
+        
 
-        if (_canBuild)
+        if (_canBuild && !_isOutOfTile)
             PaintSilhouettes(Color.green);
         else
             PaintSilhouettes(Color.red);
