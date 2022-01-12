@@ -9,7 +9,8 @@ public class ConstructionManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> _objectsShapes;
     private GameObject _selectedGrid;
-    private bool _canBuild, _isOutOfTile;
+    private bool _canBuild, _isOutOfTile, _isSelectedSpace;
+    [HideInInspector] public bool isBuildingDragging;
 
     public List<Vector2Int> constructableTiles;
     private void Start()
@@ -32,10 +33,12 @@ public class ConstructionManager : MonoBehaviour
 
         if (hit.collider != null)
         {
+            _isSelectedSpace = false;
+            
             if (currentBuild != null)
             {
                 Vector2Int coordinate = GameManager.instance.gridManager.GetTileCoordinate(hit.collider.gameObject);
-                
+
 
                 if (_selectedGrid != null && !_selectedGrid.Equals(hit.collider.gameObject))
                     HidePlaceHolders();
@@ -44,23 +47,42 @@ public class ConstructionManager : MonoBehaviour
 
                 VisualizeBuildingShape(coordinate);
 
-                if (Input.GetMouseButtonDown(0) && _canBuild && !_isOutOfTile)
+                if (!isBuildingDragging && _canBuild && !_isOutOfTile && !_isSelectedSpace)
                 {
                     if (hit.collider.tag == "Grid")
                     {
                         List<Vector2Int> tiles = FindConstructingPlaces(coordinate);
-
 
                         for (int i = 0; i < tiles.Count; i++)
                         {
                             ConstructBuilding(tiles[i]);
                         }
 
+                        //Instantiate(currentBuild.gameObject, GameManager.instance.gridManager.tiles[tiles[tiles.Count / 2].x, tiles[tiles.Count / 2].y].transform.position, Quaternion.identity);
+                        GameManager.instance.SelectBuilding(null);
                         HidePlaceHolders();
                     }
                 }
+                else if(!isBuildingDragging)
+                {
+                    GameManager.instance.SelectBuilding(null);
+                    HidePlaceHolders();
+                }
             }
         }
+        else
+        {
+            _isSelectedSpace = true;
+            PaintSilhouettes(Color.red);
+
+            if (!isBuildingDragging)
+            {
+                GameManager.instance.SelectBuilding(null);
+                HidePlaceHolders();
+            }
+
+        }
+            
     }
 
     private void VisualizeBuildingShape(Vector2Int coordinates)
@@ -71,16 +93,18 @@ public class ConstructionManager : MonoBehaviour
     private List<Vector2Int> FindConstructingPlaces(Vector2Int coordinates)
     {
         constructableTiles = new List<Vector2Int>();
-
+        _isOutOfTile = false;
         for (int row = 0; row < currentBuild.type.rows.Length; row++)
         {
             int horizontalLeftMove = Mathf.Abs(currentBuild.type.rows[row].x);
             int horizontalRightMove = Mathf.Abs(currentBuild.type.rows[row].y);
-            _isOutOfTile = false;
+
+            print($"Row: {row} - HLeft: {horizontalLeftMove} - HRight: {horizontalRightMove}");
+            
 
 
             if (horizontalLeftMove != 0)
-                for (int x = 0; x < horizontalLeftMove; x++)
+                for (int x = 1; x < horizontalLeftMove; x++)
                 {
                     if (coordinates.x + x < 10 && coordinates.x + x >= 0 && coordinates.y - row < 10 && coordinates.y - row >= 0)
                         constructableTiles.Add(new Vector2Int(coordinates.x - x, coordinates.y - row));
@@ -88,14 +112,17 @@ public class ConstructionManager : MonoBehaviour
                         _isOutOfTile = true;
                 }
                     
-
             if (horizontalRightMove != 0)
-                for (int y = 0; y < horizontalRightMove; y++)
+                for (int y = 1; y < horizontalRightMove; y++)
                 {
                     if (coordinates.x + y < 10 && coordinates.x + y >= 0 && coordinates.y - row < 10 && coordinates.y - row >= 0)
                         constructableTiles.Add(new Vector2Int(coordinates.x + y, coordinates.y - row));
                     else
+                    {
+                        print("eee");
                         _isOutOfTile = true;
+                    }
+                        
                 }
 
 
@@ -130,13 +157,13 @@ public class ConstructionManager : MonoBehaviour
 
             _objectsShapes[i].transform.position = GameManager.instance.gridManager.tiles[tiles[i].x, tiles[i].y].transform.position;
 
-            _canBuild = GameManager.instance.gridManager.ControlShapeFit(tiles);
+            _canBuild = GameManager.instance.gridManager.ControlWithOtherBuildings(tiles);
 
         }
 
         
 
-        if (_canBuild && !_isOutOfTile)
+        if (_canBuild && !_isOutOfTile && !_isSelectedSpace)
             PaintSilhouettes(Color.green);
         else
             PaintSilhouettes(Color.red);
@@ -150,7 +177,7 @@ public class ConstructionManager : MonoBehaviour
         }
     }
 
-    private void HidePlaceHolders()
+    public void HidePlaceHolders()
     {
         for (int i = 0; i < _objectsShapes.Count; i++)
         {
