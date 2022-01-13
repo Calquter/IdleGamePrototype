@@ -656,7 +656,7 @@ GameObject:
   - component: {fileID: 8109573218905680327}
   - component: {fileID: 8109573218905680324}
   m_Layer: 0
-  m_Name: BuildingA
+  m_Name: BuildingC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -689,7 +689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf21047caa3cb94aa82768a2489a128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: {fileID: 11400000, guid: 44cb90a8773c2364389fd40c73c9cc7b, type: 2}
+  type: {fileID: 11400000, guid: 575895caa9b7f4347bf3856cbb9abdc1, type: 2}
   resouceGenerateSpeed: 1
   _buildingName: {fileID: 1471152684794143263}
   _resourceRemainTime: {fileID: 1138850641}

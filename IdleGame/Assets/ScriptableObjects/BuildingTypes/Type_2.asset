@@ -10,17 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b0df989685a2a94bafde21f9c34f1a9, type: 3}
-  m_Name: TestBuild
+  m_Name: Type_2
   m_EditorClassIdentifier: 
-  constructionName: Building_A
-  constructionSprite: {fileID: 21300000, guid: db21821aba8a11442885fb09ddd3b7d7, type: 3}
+  constructionName: Building_B
+  constructionSprite: {fileID: 21300000, guid: be43cc03beafa174b827bcb526b4867e, type: 3}
   constructionObject: {fileID: 1296516175068246193, guid: cb0085b357750dd4295afca0c45c9d86, type: 3}
-  resourceGenerationDuration: 5
-  goldGenerationAmount: 10
-  gemGenerationAmount: 10
-  goldCost: 5
-  gemCost: 5
+  resourceGenerationDuration: 12
+  goldGenerationAmount: 2
+  gemGenerationAmount: 1
+  goldCost: 3
+  gemCost: 2
   rows:
-  - {x: 0, y: 3}
+  - {x: 0, y: 1}
   - {x: 0, y: 2}
-  - {x: 0, y: 0}

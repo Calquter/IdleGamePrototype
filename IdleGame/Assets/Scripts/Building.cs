@@ -43,8 +43,8 @@ public class Building : MonoBehaviour
 
     private void GenerateResource()
     {
-        GameManager.instance.playerData.myGold += type.goldGenerationAmount;
-        GameManager.instance.playerData.myGem += type.gemGenerationAmount;
+        GameManager.instance.playerData.SetMyGold(type.goldGenerationAmount);
+        GameManager.instance.playerData.SetMyGem(type.gemGenerationAmount);
 
         GameManager.instance.CreateFloatText(transform.position, type.goldGenerationAmount, type.gemGenerationAmount);
 

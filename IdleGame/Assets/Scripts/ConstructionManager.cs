@@ -9,7 +9,7 @@ public class ConstructionManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> _objectsShapes;
     private GameObject _selectedGrid;
-    private bool _canBuild, _isOutOfTile, _isSelectedSpace;
+    private bool _canBuild, _isOutOfTile, _isSelectedSpace, _isResourceEnough;
     [HideInInspector] public bool isBuildingDragging;
 
     public List<Vector2Int> constructableTiles;
@@ -39,6 +39,7 @@ public class ConstructionManager : MonoBehaviour
             {
                 Vector2Int coordinate = GameManager.instance.gridManager.GetTileCoordinate(hit.collider.gameObject);
 
+                _isResourceEnough = ControlResource();
 
                 if (_selectedGrid != null && !_selectedGrid.Equals(hit.collider.gameObject))
                     HidePlaceHolders();
@@ -47,7 +48,7 @@ public class ConstructionManager : MonoBehaviour
 
                 PlaceShapes(FindConstructingPlaces(coordinate));
 
-                if (!isBuildingDragging && _canBuild && !_isOutOfTile && !_isSelectedSpace)
+                if (!isBuildingDragging && _canBuild && !_isOutOfTile && !_isSelectedSpace && _isResourceEnough)
                 {
                     if (hit.collider.tag == "Grid")
                     {
@@ -59,9 +60,11 @@ public class ConstructionManager : MonoBehaviour
                         }
 
                         
-                        Building build = Instantiate(currentBuild.gameObject, GameManager.instance.gridManager.tiles[tiles[tiles.Count / 2].x, tiles[tiles.Count / 2].y].transform.position, Quaternion.identity)
+                        Building build = Instantiate(currentBuild.gameObject, GameManager.instance.gridManager.tiles[tiles[tiles.Count / 2].x, tiles[tiles.Count / 2].y].transform.position + Vector3.up * -.5f, Quaternion.identity)
                             .GetComponent<Building>();
                         GameManager.instance.CreateFloatText(build.transform.position, build);
+                        GameManager.instance.playerData.SetMyGem(-currentBuild.type.gemCost);
+                        GameManager.instance.playerData.SetMyGold(-currentBuild.type.goldCost);
                         GameManager.instance.SelectBuilding(null);
                         HidePlaceHolders();
                     }
@@ -153,7 +156,7 @@ public class ConstructionManager : MonoBehaviour
 
         
 
-        if (_canBuild && !_isOutOfTile && !_isSelectedSpace)
+        if (_canBuild && !_isOutOfTile && !_isSelectedSpace && _isResourceEnough)
             PaintSilhouettes(Color.green);
         else
             PaintSilhouettes(Color.red);
@@ -171,5 +174,12 @@ public class ConstructionManager : MonoBehaviour
         {
             _objectsShapes[i].SetActive(false);
         }
+    }
+    public bool ControlResource()
+    {
+        if (GameManager.instance.playerData.myGold >= currentBuild.type.goldCost && GameManager.instance.playerData.myGem >= currentBuild.type.gemCost)
+            return true;
+
+        return false;
     }
 }

@@ -11,8 +11,6 @@ public class GameManager : MonoBehaviour, IDestroyWithDelay
 
     public GameObject floatingText_Gold;
     public GameObject floatingText_Gem;
-    public GameObject floatingTextCanvas_Gold;
-    public GameObject floatingTextCanvas_Gem;
 
     public Canvas canvas;
 

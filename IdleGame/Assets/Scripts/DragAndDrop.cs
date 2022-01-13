@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
+using UnityEngine.UI;
 
 public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
@@ -9,6 +11,10 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
     private CanvasGroup _canvasGroup;
     [SerializeField] private Building _building;
 
+    [SerializeField] private Image _buildImage;
+    [SerializeField] private TMP_Text _buildGoldCost;
+    [SerializeField] private TMP_Text _buildGemCost;
+
     private Vector2 _startPos;
 
     private void Awake()
@@ -16,6 +22,10 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
         _startPos = _rectTransform.anchoredPosition;
+
+        _buildImage.sprite = _building.type.constructionSprite;
+        _buildGoldCost.text = _building.type.goldCost.ToString();
+        _buildGemCost.text = _building.type.gemCost.ToString();
     }
 
 

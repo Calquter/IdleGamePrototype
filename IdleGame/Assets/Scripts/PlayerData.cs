@@ -9,11 +9,25 @@ public class PlayerData : MonoBehaviour, ISaveLoadData
     public TMP_Text myGemText;
 
 
-    public void SetMyGold(int amount) => myGold += amount;
+    public void SetMyGold(int amount)
+    {
+        myGold += amount;
+        UpdateResources();
+    }
 
 
-    public void SetMyGem(int amount) => myGem += amount;
+    public void SetMyGem(int amount)
+    {
+        myGem += amount;
+        UpdateResources();
+    }
 
+
+    private void UpdateResources()
+    {
+        myGoldText.text = myGold.ToString();
+        myGemText.text = myGem.ToString();
+    }
 
     public void LoadData()
     {
