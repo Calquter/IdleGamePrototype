@@ -6,14 +6,14 @@ public class Building : MonoBehaviour
 {
     public BuildingType type;
     
-    private float _resourceGenerationCurrenTime;
+    [HideInInspector] public float resourceGenerationCurrentTime;
     [SerializeField] private float resouceGenerateSpeed;
     [SerializeField] private TMP_Text _buildingName;
     [SerializeField] private TMP_Text _resourceRemainTime;
     [SerializeField] private Slider _proccesSlider;
 
 
-    private void Awake() => _resourceGenerationCurrenTime = type.resourceGenerationDuration;
+    private void Awake() => resourceGenerationCurrentTime = type.resourceGenerationDuration;
 
     private void Start()
     {
@@ -27,17 +27,17 @@ public class Building : MonoBehaviour
 
     private void ResourceGenerationTimer() 
     {
-        _resourceGenerationCurrenTime -= Time.deltaTime * resouceGenerateSpeed;
+        resourceGenerationCurrentTime -= Time.deltaTime * resouceGenerateSpeed;
 
-        _resourceRemainTime.text = _resourceGenerationCurrenTime.ToString("F0") + "s";
+        _resourceRemainTime.text = resourceGenerationCurrentTime.ToString("F0") + "s";
 
         _proccesSlider.maxValue = type.resourceGenerationDuration;
-        _proccesSlider.value = _resourceGenerationCurrenTime % type.resourceGenerationDuration;
+        _proccesSlider.value = resourceGenerationCurrentTime % type.resourceGenerationDuration;
 
-        if (_resourceGenerationCurrenTime <= 0)
+        if (resourceGenerationCurrentTime <= 0)
         {
             GenerateResource();
-            _resourceGenerationCurrenTime = type.resourceGenerationDuration;
+            resourceGenerationCurrentTime = type.resourceGenerationDuration;
         }
     }
 

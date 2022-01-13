@@ -14,6 +14,10 @@ public class GameManager : MonoBehaviour, IDestroyWithDelay
 
     public Canvas canvas;
 
+    [HideInInspector] public bool isGameRestarted;
+
+    public GameObject[] allBuildingTypes;
+
     private void Awake() => instance = this;
     
 
@@ -21,12 +25,6 @@ public class GameManager : MonoBehaviour, IDestroyWithDelay
     {
         constructionManager.currentBuild = building;
     }
-
-    public void RestartGame()
-    {
-
-    }
-
     public IEnumerator DestroyWithDelay(float time, GameObject gameObject)
     {
         yield return new WaitForSeconds(time);
@@ -69,5 +67,14 @@ public class GameManager : MonoBehaviour, IDestroyWithDelay
             FloatingText floatingText = Instantiate(floatingText_Gem, pos + Vector2.right + Vector2.up, Quaternion.identity).GetComponent<FloatingText>();
             floatingText.SetResourceText(gemAmount);
         }
+    }
+
+    public void RestartGame()
+    {
+        isGameRestarted = true;
+
+        PlayerPrefs.DeleteAll();
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 }

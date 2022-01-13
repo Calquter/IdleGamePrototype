@@ -280,7 +280,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 72994543}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 635440439}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: RestartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &72994543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1105,9 +1117,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentBuild: {fileID: 0}
   _placeholderBuildingObject: {fileID: 3873705693864548356, guid: 9d82d00b628b0c242a4d917e4cf1065e, type: 3}
+  _constructedGridObject: {fileID: 1296516175068246193, guid: cb0085b357750dd4295afca0c45c9d86, type: 3}
   _objectsShapes: []
   isBuildingDragging: 0
   constructableTiles: []
+  constructedList: []
 --- !u!1 &295582244
 GameObject:
   m_ObjectHideFlags: 0
@@ -2234,6 +2248,14 @@ MonoBehaviour:
   floatingText_Gold: {fileID: 1605310679020363129, guid: 36a81fb215220864a843dc03dca3c491, type: 3}
   floatingText_Gem: {fileID: 5983207614457792526, guid: 19b419498aa902947926d4883f590747, type: 3}
   canvas: {fileID: 1321932597}
+  isGameRestarted: 0
+  allBuildingTypes:
+  - {fileID: 8109573218905680325, guid: 02bca6cd1bd788f42a115e0be04ad0f9, type: 3}
+  - {fileID: 8109573218905680325, guid: ccb0232914622ee46adec0647c7148c6, type: 3}
+  - {fileID: 8109573218905680325, guid: 9e8b4ed1631299f4282e0b351ef4ae3d, type: 3}
+  - {fileID: 8109573218905680325, guid: 0296393af3fe16c40b470bc6bc5e6fef, type: 3}
+  - {fileID: 8109573218905680325, guid: b724d0070a2697542a13e37aaa4ed49c, type: 3}
+  - {fileID: 8109573218905680325, guid: 35ec7afc5a61b534c825bfb28a3a1f88, type: 3}
 --- !u!1 &688676453
 GameObject:
   m_ObjectHideFlags: 0

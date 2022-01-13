@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class ConstructionManager : MonoBehaviour
+public class ConstructionManager : MonoBehaviour, ISaveLoadData
 {
 
     public Building currentBuild;
     [SerializeField] private GameObject _placeholderBuildingObject;
+    [SerializeField] private GameObject _constructedGridObject;
 
     [SerializeField] private List<GameObject> _objectsShapes;
     private GameObject _selectedGrid;
@@ -13,6 +14,12 @@ public class ConstructionManager : MonoBehaviour
     [HideInInspector] public bool isBuildingDragging;
 
     public List<Vector2Int> constructableTiles;
+
+    [HideInInspector] public List<GameObject> constructedList;
+
+    private int _constructedGridCount;
+
+
     private void Start()
     {
         for (int i = 0; i < 50; i++)
@@ -20,8 +27,9 @@ public class ConstructionManager : MonoBehaviour
             _objectsShapes.Add(Instantiate(_placeholderBuildingObject, new Vector2(500, 500), Quaternion.identity));
             _objectsShapes[i].SetActive(false);
         }
-    }
 
+        
+    }
     private void Update()
     {
         RaycastEvent();
@@ -67,6 +75,8 @@ public class ConstructionManager : MonoBehaviour
                         GameManager.instance.playerData.SetMyGold(-currentBuild.type.goldCost);
                         GameManager.instance.SelectBuilding(null);
                         HidePlaceHolders();
+
+                        constructedList.Add(build.gameObject);
                     }
                 }
                 else if(!isBuildingDragging)
@@ -134,7 +144,13 @@ public class ConstructionManager : MonoBehaviour
     private void ConstructBuilding(Vector2Int gridPos)
     {
         Instantiate(currentBuild.type.constructionObject, GameManager.instance.gridManager.tiles[gridPos.x, gridPos.y].transform.position, Quaternion.identity);
-        GameManager.instance.gridManager.DestroGrid(gridPos);
+
+        PlayerPrefs.SetInt($"{_constructedGridCount}:GridX", gridPos.x);
+        PlayerPrefs.SetInt($"{_constructedGridCount}:GridY", gridPos.y);
+
+        GameManager.instance.gridManager.DestroyGrid(gridPos);
+
+        _constructedGridCount++;
     }
     private void PlaceShapes(List<Vector2Int> tiles)
     {
@@ -149,9 +165,7 @@ public class ConstructionManager : MonoBehaviour
             }
 
             _objectsShapes[i].transform.position = GameManager.instance.gridManager.tiles[tiles[i].x, tiles[i].y].transform.position;
-
             _canBuild = GameManager.instance.gridManager.ControlWithOtherBuildings(tiles);
-
         }
 
         
@@ -182,4 +196,46 @@ public class ConstructionManager : MonoBehaviour
 
         return false;
     }
+    public void LoadData()
+    {
+        _constructedGridCount = PlayerPrefs.GetInt("ConstructedGridCount");
+
+        if (PlayerPrefs.HasKey("ConstructedBuildCount"))
+        {
+            for (int i = 0; i < PlayerPrefs.GetInt("ConstructedBuildCount"); i++)
+                for (int x = 0; x < GameManager.instance.allBuildingTypes.Length; x++)
+                {
+                    if (GameManager.instance.allBuildingTypes[x].GetComponent<Building>().type.constructionName.Equals(PlayerPrefs.GetString($"{i}:BuildName")))
+                    {
+                        constructedList.Add(Instantiate(GameManager.instance.allBuildingTypes[x], new Vector2(PlayerPrefs.GetFloat($"{i}:BuildPosX"), PlayerPrefs.GetFloat($"{i}:BuildPosY")), Quaternion.identity));
+                        constructedList[i].GetComponent<Building>().resourceGenerationCurrentTime = PlayerPrefs.GetFloat($"{i}:BuildResourceGenerationCurrentTime");
+                        break;
+                    }
+                }
+
+            for (int i = 0; i < _constructedGridCount; i++)
+                Instantiate(_constructedGridObject, GameManager.instance.gridManager.tiles[PlayerPrefs.GetInt($"{i}:GridX"), PlayerPrefs.GetInt($"{i}:GridY")].transform.position,
+                    Quaternion.identity);
+            
+        }
+    }
+    public void SaveData()
+    {
+        if (!GameManager.instance.isGameRestarted)
+        {
+            PlayerPrefs.SetInt("ConstructedGridCount", _constructedGridCount);
+
+            for (int i = 0; i < constructedList.Count; i++)
+            {
+                PlayerPrefs.SetString($"{i}:BuildName", constructedList[i].GetComponent<Building>().type.constructionName);
+                PlayerPrefs.SetFloat($"{i}:BuildPosX", constructedList[i].transform.position.x);
+                PlayerPrefs.SetFloat($"{i}:BuildPosY", constructedList[i].transform.position.y);
+                PlayerPrefs.SetFloat($"{i}:BuildResourceGenerationCurrentTime", constructedList[i].GetComponent<Building>().resourceGenerationCurrentTime);
+            }
+
+            PlayerPrefs.SetInt("ConstructedBuildCount", constructedList.Count);
+        }
+    }
+    private void OnApplicationQuit() => SaveData();
+
 }
