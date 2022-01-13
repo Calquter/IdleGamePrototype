@@ -13,13 +13,13 @@ public class GameManager : MonoBehaviour, IDestroyWithDelay
     public GameObject floatingText_Gem;
 
     public Canvas canvas;
+    [SerializeField] private CanvasGroup[] _buildingCards;
 
     [HideInInspector] public bool isGameRestarted;
 
     public GameObject[] allBuildingTypes;
 
     private void Awake() => instance = this;
-    
 
     public void SelectBuilding(Building building)
     {
@@ -68,7 +68,6 @@ public class GameManager : MonoBehaviour, IDestroyWithDelay
             floatingText.SetResourceText(gemAmount);
         }
     }
-
     public void RestartGame()
     {
         isGameRestarted = true;
@@ -76,5 +75,25 @@ public class GameManager : MonoBehaviour, IDestroyWithDelay
         PlayerPrefs.DeleteAll();
 
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
+
+    public void ControlResourcesForCards()
+    {
+        for (int i = 0; i < _buildingCards.Length; i++)
+        {
+            CanvasGroup cGroup = _buildingCards[i].GetComponent<CanvasGroup>();
+
+            if (_buildingCards[i].GetComponent<DragAndDrop>().getBuilding.type.goldCost > playerData.myGold || 
+                _buildingCards[i].GetComponent<DragAndDrop>().getBuilding.type.gemCost > playerData.myGem)
+            {
+                cGroup.alpha = .5f;
+                cGroup.blocksRaycasts = false;
+            }
+            else
+            {
+                cGroup.alpha = 1;
+                cGroup.blocksRaycasts = true;
+            }
+        }
     }
 }

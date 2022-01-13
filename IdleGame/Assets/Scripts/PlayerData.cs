@@ -28,6 +28,8 @@ public class PlayerData : MonoBehaviour, ISaveLoadData
     {
         myGoldText.text = myGold.ToString();
         myGemText.text = myGem.ToString();
+
+        GameManager.instance.ControlResourcesForCards();
     }
     public void LoadData()
     {

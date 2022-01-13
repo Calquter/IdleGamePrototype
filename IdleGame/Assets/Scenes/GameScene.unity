@@ -2248,6 +2248,13 @@ MonoBehaviour:
   floatingText_Gold: {fileID: 1605310679020363129, guid: 36a81fb215220864a843dc03dca3c491, type: 3}
   floatingText_Gem: {fileID: 5983207614457792526, guid: 19b419498aa902947926d4883f590747, type: 3}
   canvas: {fileID: 1321932597}
+  _buildingCards:
+  - {fileID: 1938233868}
+  - {fileID: 257121715}
+  - {fileID: 795227620}
+  - {fileID: 851966396}
+  - {fileID: 263453265}
+  - {fileID: 1471944619}
   isGameRestarted: 0
   allBuildingTypes:
   - {fileID: 8109573218905680325, guid: 02bca6cd1bd788f42a115e0be04ad0f9, type: 3}

@@ -10,6 +10,7 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
     private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
     [SerializeField] private Building _building;
+    public Building getBuilding { get { return _building; }}
 
     [SerializeField] private Image _buildImage;
     [SerializeField] private TMP_Text _buildGoldCost;
